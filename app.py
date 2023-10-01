@@ -5,3 +5,75 @@ The rules are simple:
 3. Any live cell with more than three live neighbours dies, as if by overpopulation.
 4. Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction."""
 
+import pygame
+
+pygame.init()
+
+# constants
+WIDTH = 800
+HEIGHT = 800
+FPS = 60
+CELL_SIZE = 10
+CELLS_WIDE = WIDTH // CELL_SIZE
+CELLS_HIGH = HEIGHT // CELL_SIZE
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GREY = (100, 100, 100)
+GREEN = (0, 255, 0)
+
+# set up the drawing window
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+clock = pygame.time.Clock()
+
+# draw the grid
+def draw_grid(positions):
+
+    for position in positions:
+        col, row = position
+        # we need to figure out the actual position in pixels using col and row
+        top_left = (col * CELL_SIZE, row * CELL_SIZE)
+        pygame.draw.rect(screen, GREEN, (top_left, (CELL_SIZE, CELL_SIZE)))
+
+    for row in range(CELLS_HIGH):
+        pygame.draw.line(screen, BLACK, (0, row * CELL_SIZE), (WIDTH, row * CELL_SIZE))
+    for col in range(CELLS_WIDE):
+        pygame.draw.line(screen, BLACK, (col * CELL_SIZE, 0), (col * CELL_SIZE, HEIGHT))
+# main loop
+def main():
+    running = True
+
+    positions = set()
+    positions.add((0,0))
+    while running:
+        clock.tick(FPS)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+            # check if mouse clicked, if true add position to set
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                x,y = pygame.mouse.get_pos()
+                # translate x adn y to col and row
+                col = x // CELL_SIZE
+                row = y // CELL_SIZE
+                if (col, row) in positions:
+                    positions.remove((col, row))
+                else:
+                    positions.add((col, row))
+            if event.type == pygame.KEYDOWN:
+            # check key pressed for clear, generate and pause
+                if event.key == pygame.K_c:
+                    positions.clear()
+                if event.key == pygame.K_g:
+                    pass
+                if event.key == pygame.K_SPACE:
+                    playing = not playing
+        # backgroun color
+        screen.fill(GREY)
+        draw_grid(positions)
+        pygame.display.update()
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
