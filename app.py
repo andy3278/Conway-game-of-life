@@ -68,10 +68,9 @@ def adjust_grid(positions):
     
     return new_positions
 
-
-
 def get_neighbours(positions):
-    pass
+    # get all eight neighbours of a cell
+    
 
 # generate random positions
 def gen(num:int):
