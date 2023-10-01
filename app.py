@@ -6,6 +6,7 @@ The rules are simple:
 4. Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction."""
 
 import pygame
+import random
 
 pygame.init()
 
@@ -38,6 +39,44 @@ def draw_grid(positions):
         pygame.draw.line(screen, BLACK, (0, row * CELL_SIZE), (WIDTH, row * CELL_SIZE))
     for col in range(CELLS_WIDE):
         pygame.draw.line(screen, BLACK, (col * CELL_SIZE, 0), (col * CELL_SIZE, HEIGHT))
+
+def adjust_grid(positions):
+    # only look at cells that could poteniallly change status
+    all_neighbours = set()
+    new_positions = set()
+
+    # check alive cells to determine if they live or die
+    for position in positions:
+        neighbours = get_neighbours(position)
+        all_neighbours.update(neighbours)
+
+        # keep only alive neighbours
+        neighbours = list(filter(lambda x: x in positions, neighbours))
+        # if there is 2 or 3 alive neighbours, keep cell alive to next round
+        if len(neighbours) == 2 or len(neighbours) == 3:
+            new_positions.add(position)
+
+    # check dead cells to determine if they come to life
+    for position in all_neighbours:
+        neighbours = get_neighbours(position)
+        # keep only alive neighbours
+        neighbours = list(filter(lambda x: x in positions, neighbours))
+
+        # if there is 3 alive neighbours, bring cell to life
+        if len(neighbours) == 3:
+            new_positions.add(position)
+    
+    return new_positions
+
+
+
+def get_neighbours(positions):
+    pass
+
+# generate random positions
+def gen(num:int):
+    # generate that many random col and row positions return as a set
+    return set([(random.randrange(0, CELLS_WIDE), random.randrange(0, CELLS_HIGH)) for _ in range(num)])
 # main loop
 def main():
     running = True
@@ -65,8 +104,9 @@ def main():
             # check key pressed for clear, generate and pause
                 if event.key == pygame.K_c:
                     positions.clear()
+                    playing = False
                 if event.key == pygame.K_g:
-                    pass
+                    positions = gen(random.randrange(2, 5) * CELLS_WIDE)
                 if event.key == pygame.K_SPACE:
                     playing = not playing
         # backgroun color
