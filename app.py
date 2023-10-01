@@ -68,10 +68,22 @@ def adjust_grid(positions):
     
     return new_positions
 
-def get_neighbours(positions):
+def get_neighbours(position):
     # get all eight neighbours of a cell
-    
+    x ,y = position
+    neighbours = []
 
+    for dx in [-1, 0, 1]:
+        # check if x is out of bounds
+        if x + dx < 0 or x + dx > CELLS_WIDE:
+            continue 
+        for dy in [-1, 0, 1]:
+            if y + dy < 0 or y + dy > CELLS_HIGH:
+                continue
+            if dx == dy == 0:
+                continue
+            neighbours.append((x + dx, y + dy))
+    return neighbours
 # generate random positions
 def gen(num:int):
     # generate that many random col and row positions return as a set
@@ -79,12 +91,22 @@ def gen(num:int):
 # main loop
 def main():
     running = True
+    playing = False
+    count = 0 
+    frequency = 30
 
     positions = set()
-    positions.add((0,0))
+    # positions.add((0,0))
     while running:
         clock.tick(FPS)
 
+        if playing:
+            count += 1
+        if count >= frequency:
+            count = 0
+            positions = adjust_grid(positions)
+
+        pygame.display.set_caption("Playing" if playing else "Paused")
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -104,8 +126,9 @@ def main():
                 if event.key == pygame.K_c:
                     positions.clear()
                     playing = False
+                    count = 0
                 if event.key == pygame.K_g:
-                    positions = gen(random.randrange(2, 5) * CELLS_WIDE)
+                    positions = gen(random.randrange(2, 7) * CELLS_WIDE)
                 if event.key == pygame.K_SPACE:
                     playing = not playing
         # backgroun color
