@@ -14,7 +14,7 @@ pygame.init()
 WIDTH = 800
 HEIGHT = 800
 FPS = 60
-CELL_SIZE = 10
+CELL_SIZE = 5
 CELLS_WIDE = WIDTH // CELL_SIZE
 CELLS_HIGH = HEIGHT // CELL_SIZE
 BLACK = (0, 0, 0)
@@ -93,7 +93,7 @@ def main():
     running = True
     playing = False
     count = 0 
-    frequency = 30
+    frequency = 10
 
     positions = set()
     # positions.add((0,0))
@@ -128,7 +128,7 @@ def main():
                     playing = False
                     count = 0
                 if event.key == pygame.K_g:
-                    positions = gen(random.randrange(2, 7) * CELLS_WIDE)
+                    positions = gen(random.randrange(10, 15) *2 * CELLS_WIDE)
                 if event.key == pygame.K_SPACE:
                     playing = not playing
         # backgroun color
